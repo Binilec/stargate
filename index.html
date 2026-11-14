@@ -1,0 +1,811 @@
+а<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StarGate — Врата к звёздам | Аудит талантов и набор в команду</title>
+<meta name="description" content="StarGate — аудит талантов от 8 до 20 лет и набор в команду: менеджеры, монтажёры.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background: #090a0f;
+    color: #111;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* ===== ЗВЁЗДНОЕ НЕБО ===== */
+  #starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  header, main, footer { position: relative; z-index: 1; }
+
+  /* ===== ШАПКА ===== */
+  header {
+    background: rgba(255,255,255,0.96);
+    border-bottom: 2px solid #111;
+    padding: 14px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(6px);
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: #111;
+    transition: opacity .15s;
+  }
+  .logo:hover { opacity: .8; }
+  .logo svg { display: block; }
+  nav { display: flex; align-items: center; flex-wrap: wrap; }
+  nav a {
+    color: #111;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 22px;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color .15s;
+  }
+  nav a:hover { border-bottom-color: #111; }
+  nav a.cta-nav {
+    background: #111;
+    color: #fff;
+    padding: 8px 16px;
+    border-bottom: none;
+  }
+  nav a.cta-nav:hover { background: #333; }
+
+  main { flex: 1; width: 100%; }
+
+  /* ===== HERO ===== */
+  .hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 90px 20px 60px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.15;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  }
+  .hero h1 span { color: #d32f2f; }
+  .hero p {
+    font-size: 16px;
+    color: #cfd3dc;
+    max-width: 600px;
+    margin: 0 auto 32px;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.6);
+  }
+  .hero .age-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    padding: 6px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 24px;
+    backdrop-filter: blur(4px);
+  }
+  .cta-group {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta {
+    display: inline-block;
+    background: #111;
+    color: #fff;
+    padding: 16px 40px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border: 2px solid #111;
+    transition: background .15s, color .15s;
+  }
+  .cta:hover { background: #333; }
+  .cta.secondary {
+    background: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+  }
+  .cta.secondary:hover { background: #fff; color: #111; }
+
+  /* ===== СЕКЦИИ ===== */
+  section.block {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 20px;
+  }
+  .section-head {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .section-head .kicker {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #d32f2f;
+    margin-bottom: 8px;
+  }
+  .section-head h2 {
+    font-size: 28px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.5px;
+    color: #fff;
+  }
+
+  /* ===== КОГО МЫ ИЩЕМ ===== */
+  .roles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .role-card {
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #e0e0e0;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color .15s, transform .1s;
+  }
+  .role-card:hover { border-color: #111; transform: translateY(-2px); }
+  .role-card .tag {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #d32f2f;
+    margin-bottom: 8px;
+  }
+  .role-card h3 {
+    font-size: 18px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .role-card p { font-size: 13px; color: #555; margin-bottom: 16px; flex: 1; }
+  .role-card ul { list-style: none; margin-bottom: 20px; }
+  .role-card ul li {
+    font-size: 12px;
+    color: #444;
+    padding: 4px 0 4px 18px;
+    position: relative;
+  }
+  .role-card ul li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: #d32f2f;
+  }
+  .role-card .role-cta {
+    display: block;
+    text-align: center;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 12px;
+    transition: background .15s;
+  }
+  .role-card .role-cta:hover { background: #333; }
+
+  /* ===== КАК ЭТО РАБОТАЕТ ===== */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    counter-reset: step;
+  }
+  .step {
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #e0e0e0;
+    padding: 28px 24px;
+  }
+  .step::before {
+    counter-increment: step;
+    content: "0" counter(step);
+    display: block;
+    font-size: 32px;
+    font-weight: 800;
+    color: #d32f2f;
+    margin-bottom: 12px;
+  }
+  .step h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .step p { font-size: 13px; color: #555; }
+
+  /* ===== ТРЕБОВАНИЯ ===== */
+  .requirements {
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #e0e0e0;
+    padding: 32px;
+  }
+  .requirements ul { list-style: none; }
+  .requirements li {
+    padding: 12px 0 12px 32px;
+    position: relative;
+    font-size: 14px;
+    border-bottom: 1px dashed #e5e7eb;
+  }
+  .requirements li:last-child { border-bottom: none; }
+  .requirements li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 12px;
+    color: #d32f2f;
+    font-weight: 800;
+  }
+
+  /* ===== ТАЙМЕР ===== */
+  .timer-wrap {
+    background: rgba(0,0,0,0.55);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    padding: 40px 24px;
+    text-align: center;
+    backdrop-filter: blur(6px);
+  }
+  .timer-wrap .kicker {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #d32f2f;
+    margin-bottom: 8px;
+  }
+  .timer-wrap h2 {
+    font-size: 22px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .timer { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  .timer .unit {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.15);
+    min-width: 80px;
+    padding: 16px 8px;
+  }
+  .timer .num { font-size: 32px; font-weight: 800; }
+  .timer .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #aaa;
+    margin-top: 6px;
+  }
+
+  /* ===== СЧЁТЧИКИ ===== */
+  .counters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    text-align: center;
+  }
+  .counter .num {
+    font-size: 38px;
+    font-weight: 800;
+    color: #d32f2f;
+  }
+  .counter .label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #cfd3dc;
+    margin-top: 8px;
+  }
+
+  /* ===== FAQ ===== */
+  .faq { max-width: 720px; margin: 0 auto; }
+  .faq-item {
+    background: rgba(255,255,255,0.97);
+    border: 1px solid #e0e0e0;
+    margin-bottom: 10px;
+  }
+  .faq-item summary {
+    padding: 16px 44px 16px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after {
+    content: "+";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #d32f2f;
+  }
+  .faq-item[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+  .faq-item .answer { padding: 0 20px 16px; font-size: 13px; color: #555; }
+
+  /* ===== CTA ВНИЗУ ===== */
+  .final-cta { text-align: center; }
+  .final-cta h2 {
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .final-cta p { color: #cfd3dc; margin-bottom: 24px; }
+
+  /* ===== ФУТЕР ===== */
+  footer {
+    background: rgba(0,0,0,0.7);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 40px 40px 24px;
+    text-align: center;
+    color: #ccc;
+    backdrop-filter: blur(6px);
+  }
+  .footer-brand {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    color: #fff;
+  }
+  .footer-brand span { color: #d32f2f; }
+  .socials { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; }
+  .socials a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .socials a:hover { background: #fff; color: #111; border-color: #fff; }
+  .footer-bottom {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ===== НАВЕРХ ===== */
+  #toTop {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    z-index: 200;
+  }
+  #toTop:hover { background: #333; }
+
+  /* ===== АДАПТИВ ===== */
+  @media (max-width: 600px) {
+    header { padding: 12px 20px; flex-direction: column; gap: 10px; }
+    nav { justify-content: center; }
+    nav a { margin: 4px 8px; font-size: 11px; }
+    .hero h1 { font-size: 30px; }
+    .hero { padding: 60px 20px 40px; }
+    .section-head h2 { font-size: 22px; }
+    .timer .unit { min-width: 64px; }
+    .timer .num { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<header>
+  <a href="index.html" class="logo" aria-label="StarGate — на главную">
+    <svg viewBox="0 0 260 56" height="44" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 6 50 L 6 26 A 20 20 0 0 1 46 26 L 46 50"
+            fill="none" stroke="#d32f2f" stroke-width="3"/>
+      <g transform="translate(26, 30)">
+        <polygon points="0,-12 3,-4 12,-4 5,1 8,10 0,5 -8,10 -5,1 -12,-4 -3,-4"
+                 fill="#111"/>
+      </g>
+      <text x="62" y="36" font-family="Helvetica, Arial, sans-serif"
+            font-size="22" font-weight="800" fill="#111" letter-spacing="3">STAR</text>
+      <text x="152" y="36" font-family="Helvetica, Arial, sans-serif"
+            font-size="22" font-weight="800" fill="#d32f2f" letter-spacing="3">GATE</text>
+      <text x="63" y="50" font-family="Helvetica, Arial, sans-serif"
+            font-size="6" fill="#888" letter-spacing="2">AUDITION PORTAL</text>
+    </svg>
+  </a>
+  <nav>
+    <a href="about.html">О проекте</a>
+    <a href="artists.html">Наши артисты</a>
+    <a href="#roles">Кого мы ищем</a>   
+    <a href="#how">Как это работает</a>
+    <a href="#requirements">Требования</a>
+    <a href="#faq">FAQ</a>
+    <a href="apply.html" class="cta-nav">Подать заявку</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="age-badge">Набор талантов 8–20 лет · Команда без ограничений</div>
+    <h1>StarGate —<br>врата к <span>звёздам</span></h1>
+    <p>Мы ищем не только артистов, но и тех, кто создаёт сцену за кулисами. Вокал, танец, рэп, актёрское мастерство, моделинг — а также менеджмент и монтаж.</p>
+    <div class="cta-group">
+      <a href="apply.html?type=artist" class="cta">Стать артистом</a>
+      <a href="apply.html?type=team" class="cta secondary">В команду</a>
+    </div>
+  </section>
+
+  <section class="block" id="roles">
+    <div class="section-head">
+      <div class="kicker">Направления</div>
+      <h2>Кого мы ищем</h2>
+    </div>
+    <div class="roles">
+      <div class="role-card">
+        <div class="tag">На сцену</div>
+        <h3>Артист</h3>
+        <p>Вокалисты, танцоры, рэперы, актёры и модели. Возраст — от 8 до 20 лет.</p>
+        <ul>
+          <li>Вокал · Танец · Рэп</li>
+          <li>Актёрское мастерство · Моделинг</li>
+          <li>2 фото + видео до 50 МБ</li>
+        </ul>
+        <a href="apply.html?type=artist" class="role-cta">Подать заявку</a>
+      </div>
+      <div class="role-card">
+        <div class="tag">За кулисами</div>
+        <h3>Менеджер</h3>
+        <p>Организация съёмок, работа с артистами, планирование и коммуникация.</p>
+        <ul>
+          <li>Опыт в организации — плюс</li>
+          <li>Грамотная речь и ответственность</li>
+          <li>Возможна удалённая работа</li>
+        </ul>
+        <a href="apply.html?type=manager" class="role-cta">Подать заявку</a>
+      </div>
+      <div class="role-card">
+        <div class="tag">За кулисами</div>
+        <h3>Монтажёр</h3>
+        <p>Монтаж видео для соцсетей и презентаций, работа с цветом и звуком.</p>
+        <ul>
+          <li>Premiere Pro / DaVinci / CapCut</li>
+          <li>Портфолио обязательно</li>
+          <li>Удалённая работа</li>
+        </ul>
+        <a href="apply.html?type=editor" class="role-cta">Подать заявку</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how">
+    <div class="section-head">
+      <div class="kicker">Процесс</div>
+      <h2>Как это работает</h2>
+    </div>
+    <div class="steps">
+      <div class="step"><h3>Заполни форму</h3><p>Выбери, кем хочешь стать: артистом, менеджером или монтажёром.</p></div>
+      <div class="step"><h3>Прикрепи материалы</h3><p>Артисты — фото и видео. Команда — портфолио или резюме.</p></div>
+      <div class="step"><h3>Дождись ответа</h3><p>Мы рассмотрим заявку в течение 14 дней и напишем на email.</p></div>
+      <div class="step"><h3>Пройди интервью</h3><p>Если всё подходит — назначим онлайн-встречу и обсудим детали.</p></div>
+    </div>
+  </section>
+
+  <section class="block" id="requirements">
+    <div class="section-head">
+      <div class="kicker">Кто может участвовать</div>
+      <h2>Требования</h2>
+    </div>
+    <div class="requirements">
+      <ul>
+        <li><strong>Артисты:</strong> возраст <strong>от 8 до 20 лет</strong> на момент подачи заявки.</li>
+        <li>Для участников младше 18 лет — письменное согласие родителей или опекунов.</li>
+        <li><strong>Менеджеры и монтажёры:</strong> возраст от 16 лет, ограничений по верхней границе нет.</li>
+        <li>Опыт выступлений для артистов <strong>не обязателен</strong> — важнее потенциал.</li>
+        <li>Можно подать заявку только в <strong>одну</strong> категорию.</li>
+        <li>Фото без фильтров, автотюна и сильной обработки; видео до 50 МБ, до 3 минут.</li>
+        <li>Для монтажёров — портфолио или ссылка на работы.</li>
+        <li>Участие <strong>бесплатное</strong> на всех этапах.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="timer-wrap" id="deadline">
+    <div class="kicker">Приём заявок</div>
+    <h2>До конца набора осталось</h2>
+    <div class="timer">
+      <div class="unit"><div class="num" id="t-days">00</div><div class="label">дней</div></div>
+      <div class="unit"><div class="num" id="t-hours">00</div><div class="label">часов</div></div>
+      <div class="unit"><div class="num" id="t-mins">00</div><div class="label">минут</div></div>
+      <div class="unit"><div class="num" id="t-secs">00</div><div class="label">секунд</div></div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="counters">
+      <div class="counter"><div class="num" data-target="12480">0</div><div class="label">заявок подано</div></div>
+      <div class="counter"><div class="num" data-target="42">0</div><div class="label">страны</div></div>
+      <div class="counter"><div class="num" data-target="3">0</div><div class="label">направления</div></div>
+      <div class="counter"><div class="num" data-target="14">0</div><div class="label">дней на ответ</div></div>
+    </div>
+  </section>
+
+  <section class="block" id="faq">
+    <div class="section-head">
+      <div class="kicker">Частые вопросы</div>
+      <h2>FAQ</h2>
+    </div>
+    <div class="faq">
+      <details class="faq-item"><summary>Нужен ли опыт выступлений?</summary><div class="answer">Нет. Мы ищем потенциал, а не идеальную технику.</div></details>
+      <details class="faq-item"><summary>Это правда бесплатно?</summary><div class="answer">Да. Подача заявки и участие в аудите не требуют оплаты.</div></details>
+      <details class="faq-item"><summary>Можно ли подать заявку в несколько категорий?</summary><div class="answer">Нет. Нужно выбрать одно направление.</div></details>
+      <details class="faq-item"><summary>Когда со мной свяжутся?</summary><div class="answer">В течение 14 дней после подачи.</div></details>
+      <details class="faq-item"><summary>Что делать, если я несовершеннолетний?</summary><div class="answer">Подать заявку артиста можно с 8 лет, в команду — с 16 лет. Нужно согласие родителей.</div></details>
+      <details class="faq-item"><summary>Какой возраст подходит для участия?</summary><div class="answer">Для артистов — от 8 до 20 лет. Для менеджеров и монтажёров — от 16 лет.</div></details>
+      <details class="faq-item"><summary>Нужно ли портфолио монтажёру?</summary><div class="answer">Да, обязательно — ссылка на работы или шоурил.</div></details>
+    </div>
+  </section>
+
+  <section class="block final-cta">
+    <h2>Готов начать?</h2>
+    <p>Одна заявка может изменить всё.</p>
+    <div class="cta-group">
+      <a href="apply.html?type=artist" class="cta">Стать артистом</a>
+      <a href="apply.html?type=team" class="cta secondary">В команду</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-brand">Star<span>Gate</span></div>
+  <div class="socials">
+    <a href="#" aria-label="Instagram">IG</a>
+    <a href="#" aria-label="TikTok">TT</a>
+    <a href="#" aria-label="YouTube">YT</a>
+    <a href="#" aria-label="Telegram">TG</a>
+  </div>
+  <div class="footer-bottom">© 2026 StarGate. Демонстрационный проект.</div>
+</footer>
+
+<button id="toTop" aria-label="Наверх">↑</button>
+
+<script>
+
+/* =========================================
+   ТАЙМЕР
+   ========================================= */
+const DEADLINE = new Date('2026-12-31T23:59:59');
+function updateTimer() {
+  const diff = DEADLINE - new Date();
+  if (diff <= 0) {
+    ['t-days','t-hours','t-mins','t-secs'].forEach(id => document.getElementById(id).textContent = '00');
+    return;
+  }
+  document.getElementById('t-days').textContent  = String(Math.floor(diff / 86400000)).padStart(2,'0');
+  document.getElementById('t-hours').textContent = String(Math.floor(diff / 3600000) % 24).padStart(2,'0');
+  document.getElementById('t-mins').textContent  = String(Math.floor(diff / 60000) % 60).padStart(2,'0');
+  document.getElementById('t-secs').textContent  = String(Math.floor(diff / 1000) % 60).padStart(2,'0');
+}
+updateTimer();
+setInterval(updateTimer, 1000);
+/* =========================================
+   ЗВЁЗДНОЕ НЕБО + ПАДАЮЩИЕ ЗВЁЗДЫ
+   ========================================= */
+(function initStarfield() {
+  const canvas = document.getElementById('starfield');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let meteors = [];
+  let w, h;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    createStars();
+  }
+
+  function createStars() {
+    stars = [];
+    const count = Math.floor((w * h) / 6000);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.4 + 0.3,
+        alpha: Math.random() * 0.7 + 0.3,
+        twinkle: Math.random() * 0.02 + 0.005,
+        dx: (Math.random() - 0.5) * 0.15,
+        dy: Math.random() * 0.15 + 0.02,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  /* Создаём метеор */
+  function spawnMeteor() {
+    const startX = Math.random() * w * 0.8 + w * 0.2;
+    meteors.push({
+      x: startX,
+      y: -50,
+      len: Math.random() * 120 + 80,     // длина хвоста
+      speed: Math.random() * 6 + 6,      // скорость
+      angle: Math.PI / 3.5,              // угол падения (~50°)
+      alpha: 1,
+      thickness: Math.random() * 1.5 + 1,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+
+    // фон
+    const g = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, Math.max(w,h));
+    g.addColorStop(0, '#1b2735');
+    g.addColorStop(1, '#090a0f');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+
+    // звёзды
+    for (const s of stars) {
+      s.phase += s.twinkle;
+      const a = s.alpha * (0.6 + 0.4 * Math.sin(s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${a})`;
+      ctx.fill();
+
+      s.x += s.dx;
+      s.y += s.dy;
+      if (s.y > h) { s.y = -2; s.x = Math.random() * w; }
+      if (s.x < 0) s.x = w;
+      if (s.x > w) s.x = 0;
+    }
+
+    // метеоры
+    for (let i = meteors.length - 1; i >= 0; i--) {
+      const m = meteors[i];
+      m.x -= Math.cos(m.angle) * m.speed;
+      m.y += Math.sin(m.angle) * m.speed;
+      m.alpha -= 0.006;
+
+      if (m.alpha <= 0 || m.y > h + 100 || m.x < -200) {
+        meteors.splice(i, 1);
+        continue;
+      }
+
+      const tailX = m.x + Math.cos(m.angle) * m.len;
+      const tailY = m.y - Math.sin(m.angle) * m.len;
+
+      const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+      grad.addColorStop(0, `rgba(255,255,255,${m.alpha})`);
+      grad.addColorStop(0.3, `rgba(211,47,47,${m.alpha * 0.7})`);
+      grad.addColorStop(1, 'rgba(211,47,47,0)');
+
+      ctx.beginPath();
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = m.thickness;
+      ctx.lineCap = 'round';
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(tailX, tailY);
+      ctx.stroke();
+
+      // яркая голова метеора
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.thickness * 1.6, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${m.alpha})`;
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+
+  /* Запуск метеоров: первый через 2 сек, потом случайно каждые 2–6 сек */
+  setTimeout(() => {
+    spawnMeteor();
+    (function loop() {
+      setTimeout(() => { spawnMeteor(); loop(); }, Math.random() * 4000 + 2000);
+    })();
+  }, 2000);
+})();
+
+/* =========================================
+   СЧЁТЧИКИ
+   ========================================= */
+function animateCounter(el) {
+  const target = Number(el.dataset.target);
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min((now - start) / 1500, 1);
+    el.textContent = Math.floor((1 - Math.pow(1 - p, 3)) * target).toLocaleString('ru-RU');
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const obs = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { animateCounter(e.target); obs.unobserve(e.target); }
+}), { threshold: 0.4 });
+document.querySelectorAll('.counter .num').forEach(el => obs.observe(el));
+
+/* =========================================
+   КНОПКА «НАВЕРХ»
+   ========================================= */
+const toTop = document.getElementById('toTop');
+window.addEventListener('scroll', () => toTop.style.display = window.scrollY > 400 ? 'block' : 'none');
+toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* =========================================
+   ПЛАВНЫЙ СКРОЛЛ
+   ========================================= */
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const id = link.getAttribute('href');
+    if (id === '#' || !document.querySelector(id)) return;
+    e.preventDefault();
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

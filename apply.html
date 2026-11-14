@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Заявка | StarGate</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; color: #111; line-height: 1.5; padding: 40px 20px; }
+  .container { max-width: 640px; margin: 0 auto; background: #fff; border: 1px solid #e0e0e0; padding: 40px 36px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; max-width: 640px; margin: 0 auto 20px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .topbar a { color: #111; text-decoration: none; border-bottom: 2px solid transparent; padding-bottom: 2px; transition: border-color .15s; }
+  .topbar a:hover { border-bottom-color: #111; }
+  .topbar .brand { font-weight: 800; letter-spacing: 2px; }
+  .topbar .brand span { color: #d32f2f; }
+  .header { border-bottom: 2px solid #111; padding-bottom: 16px; margin-bottom: 28px; }
+  .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; text-transform: uppercase; }
+  .header .sub { font-size: 12px; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .notice { background: #fafafa; border-left: 3px solid #111; padding: 12px 16px; font-size: 12px; color: #444; margin-bottom: 24px; line-height: 1.6; }
+  .notice strong { color: #111; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #888; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
+  .section-title:first-of-type { margin-top: 0; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #333; }
+  .field label .req { color: #d32f2f; margin-left: 2px; }
+  .field input, .field select, .field textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 0; font-size: 14px; font-family: inherit; outline: none; background: #fff; transition: border-color .15s; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: #111; }
+  .field textarea { resize: vertical; min-height: 60px; }
+  .row { display: flex; gap: 16px; }
+  .row .field { flex: 1; }
+  .hint { font-size: 11px; color: #888; margin-top: 3px; }
+  .error { font-size: 11px; color: #d32f2f; margin-top: 3px; display: none; }
+  .field.invalid input, .field.invalid select, .field.invalid textarea { border-color: #d32f2f; }
+  .field.invalid .error { display: block; }
+  .checkbox-group { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: #444; margin: 16px 0; line-height: 1.5; }
+  .checkbox-group input { margin-top: 2px; width: auto; }
+  .checkbox-group.invalid { color: #d32f2f; }
+  button { width: 100%; padding: 14px; background: #111; color: #fff; border: none; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-top: 8px; transition: background .15s; }
+  button:hover { background: #333; }
+  button:disabled { background: #999; cursor: not-allowed; }
+  .success { display: none; text-align: center; padding: 40px 0; }
+  .success .icon { width: 56px; height: 56px; background: #111; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; }
+  .success h2 { font-size: 18px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+  .success p { font-size: 13px; color: #666; margin-bottom: 24px; }
+  .success button { background: #666; }
+  .success button:hover { background: #444; }
+  .file-note { font-size: 11px; color: #888; margin-top: 4px; font-style: italic; }
+  footer { max-width: 640px; margin: 30px auto 0; text-align: center; font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+  .choose { display: none; text-align: center; }
+  .choose h1 { font-size: 22px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; }
+  .choose p { font-size: 13px; color: #666; margin-bottom: 28px; }
+  .choose-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; }
+  .choose-option { display: block; background: #fff; border: 1px solid #e0e0e0; padding: 20px; text-decoration: none; color: #111; transition: border-color .15s; }
+  .choose-option:hover { border-color: #111; }
+  .choose-option .tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #d32f2f; margin-bottom: 6px; }
+  .choose-option h3 { font-size: 16px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+  .choose-option p { font-size: 12px; color: #666; margin: 0; }
+  @media (max-width: 600px) {
+    .row { flex-direction: column; gap: 0; }
+    .container { padding: 28px 20px; }
+    .choose-options { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html">← На главную</a>
+  <span class="brand">Star<span>Gate</span></span>
+</div>
+
+<div class="container">
+
+  <!-- ЭКРАН ВЫБОРА ДЛЯ КОМАНДЫ -->
+  <div id="chooseBlock" class="choose">
+    <h1>Кем хочешь стать?</h1>
+    <p>Выбери направление — и заполни заявку.</p>
+    <div class="choose-options">
+      <a href="apply.html?type=manager" class="choose-option">
+        <div class="tag">За кулисами</div>
+        <h3>Менеджер</h3>
+        <p>Организация съёмок, работа с артистами, планирование.</p>
+      </a>
+      <a href="apply.html?type=editor" class="choose-option">
+        <div class="tag">За кулисами</div>
+        <h3>Монтажёр</h3>
+        <p>Монтаж видео для соцсетей и презентаций.</p>
+      </a>
+    </div>
+  </div>
+
+  <!-- ФОРМА -->
+  <div id="formBlock">
+    <div class="header">
+      <h1 id="formTitle">Заявка</h1>
+      <div class="sub" id="formSub">StarGate</div>
+    </div>
+
+    <div class="notice" id="formNotice"></div>
+
+    <form id="jypForm" novalidate>
+
+      <div class="section-title">1. Личная информация</div>
+
+      <div class="field" id="f-fullname">
+        <label>Полное имя <span class="req">*</span></label>
+        <input type="text" id="fullname" placeholder="ИВАНОВ ИВАН ИВАНОВИЧ">
+        <div class="error">Введите полное имя (минимум 2 символа)</div>
+      </div>
+
+      <div class="row">
+        <div class="field" id="f-dob">
+          <label>Дата рождения <span class="req">*</span></label>
+          <input type="date" id="dob">
+          <div class="error" id="dobError">Укажите дату рождения</div>
+        </div>
+        <div class="field" id="f-gender">
+          <label>Пол <span class="req">*</span></label>
+          <select id="gender">
+            <option value="">Выберите</option>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+            <option value="other">Другой / Не указывать</option>
+          </select>
+          <div class="error">Выберите пол</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field" id="f-city">
+          <label>Город <span class="req">*</span></label>
+          <input type="text" id="city" placeholder="Барнаул">
+          <div class="error">Укажите город</div>
+        </div>
+        <div class="field" id="f-country">
+          <label>Страна <span class="req">*</span></label>
+          <input type="text" id="country" placeholder="Россия">
+          <div class="error">Укажите страну</div>
+        </div>
+      </div>
+
+      <div class="section-title">2. Контакты</div>
+
+      <div class="field" id="f-email">
+        <label>Электронная почта <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="you@example.com">
+        <div class="error">Введите корректный email</div>
+      </div>
+
+      <div class="field" id="f-phone">
+        <label>Телефон <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="+7 900 123 45 67">
+        <div class="error">Введите корректный номер (минимум 10 цифр)</div>
+      </div>
+
+      <div class="field">
+        <label>Telegram / соцсети</label>
+        <input type="text" id="social" placeholder="@username или ссылка">
+        <div class="hint">Необязательно, но поможет связаться быстрее.</div>
+      </div>
+
+      <!-- ПОЛЯ АРТИСТА -->
+      <div id="artistFields">
+        <div class="section-title">3. Данные артиста</div>
+
+        <div class="row">
+          <div class="field" id="f-height">
+            <label>Рост (см) <span class="req">*</span></label>
+            <input type="number" id="height" placeholder="170">
+            <div class="error">Укажите рост</div>
+          </div>
+          <div class="field" id="f-weight">
+            <label>Вес (кг) <span class="req">*</span></label>
+            <input type="number" id="weight" placeholder="60">
+            <div class="error">Укажите вес</div>
+          </div>
+        </div>
+
+        <div class="field" id="f-nationality">
+          <label>Гражданство <span class="req">*</span></label>
+          <input type="text" id="nationality" placeholder="Российское">
+          <div class="error">Укажите гражданство</div>
+        </div>
+
+        <div class="section-title">4. Категория (выберите ОДНУ)</div>
+
+        <div class="field" id="f-category">
+          <label>Категория <span class="req">*</span></label>
+          <select id="category">
+            <option value="">Выберите одну категорию</option>
+            <option value="vocal">Вокал</option>
+            <option value="dance">Танец</option>
+            <option value="rap">Рэп</option>
+            <option value="acting">Актёрское мастерство</option>
+            <option value="model">Моделинг</option>
+          </select>
+          <div class="error">Выберите категорию</div>
+        </div>
+
+        <div class="section-title">5. Фото и видео</div>
+
+        <div class="field">
+          <label>Фото 1 — лицо <span class="req">*</span></label>
+          <input type="file" id="photo1" accept="image/*">
+          <div class="file-note">Без фильтров, естественное освещение.</div>
+          <div class="error" id="err-photo1" style="display:none">Загрузите фото</div>
+        </div>
+
+        <div class="field">
+          <label>Фото 2 — в полный рост <span class="req">*</span></label>
+          <input type="file" id="photo2" accept="image/*">
+          <div class="error" id="err-photo2" style="display:none">Загрузите фото</div>
+        </div>
+
+        <div class="field">
+          <label>Видео <span class="req">*</span></label>
+          <input type="file" id="video" accept="video/*">
+          <div class="file-note">До 50 МБ, до 3 минут, без монтажа.</div>
+          <div class="error" id="err-video" style="display:none">Загрузите видео</div>
+        </div>
+      </div>
+
+      <!-- ПОЛЯ МЕНЕДЖЕРА -->
+      <div id="managerFields" style="display:none">
+        <div class="section-title">3. Данные менеджера</div>
+
+        <div class="field" id="f-exp">
+          <label>Опыт работы <span class="req">*</span></label>
+          <select id="experience">
+            <option value="">Выберите</option>
+            <option value="none">Нет опыта</option>
+            <option value="lt1">Меньше года</option>
+            <option value="1-3">1–3 года</option>
+            <option value="gt3">Больше 3 лет</option>
+          </select>
+          <div class="error">Укажите опыт</div>
+        </div>
+
+        <div class="field" id="f-sphere">
+          <label>Сфера опыта <span class="req">*</span></label>
+          <input type="text" id="sphere" placeholder="Шоу-бизнес, event, SMM">
+          <div class="error">Укажите сферу</div>
+        </div>
+
+        <div class="field">
+          <label>Резюме (PDF или ссылка)</label>
+          <input type="text" id="resume" placeholder="Ссылка на резюме">
+        </div>
+
+        <div class="field" id="f-motivation">
+          <label>Почему хотите к нам? <span class="req">*</span></label>
+          <textarea id="motivation" placeholder="Коротко о мотивации (минимум 20 символов)"></textarea>
+          <div class="error">Напишите хотя бы 20 символов</div>
+        </div>
+      </div>
+
+      <!-- ПОЛЯ МОНТАЖЁРА -->
+      <div id="editorFields" style="display:none">
+        <div class="section-title">3. Данные монтажёра</div>
+
+        <div class="field" id="f-tools">
+          <label>Программы <span class="req">*</span></label>
+          <input type="text" id="tools" placeholder="Premiere Pro, DaVinci, CapCut">
+          <div class="error">Укажите программы</div>
+        </div>
+
+        <div class="field" id="f-portfolio">
+          <label>Ссылка на портфолио <span class="req">*</span></label>
+          <input type="url" id="portfolio" placeholder="https://…">
+          <div class="error">Вставьте корректную ссылку</div>
+        </div>
+
+        <div class="field" id="f-exp-editor">
+          <label>Опыт <span class="req">*</span></label>
+          <select id="editorExp">
+            <option value="">Выберите</option>
+            <option value="lt1">Меньше года</option>
+            <option value="1-3">1–3 года</option>
+            <option value="gt3">Больше 3 лет</option>
+          </select>
+          <div class="error">Укажите опыт</div>
+        </div>
+
+        <div class="field">
+          <label>Шоурил (ссылка)</label>
+          <input type="url" id="showreel" placeholder="https://…">
+        </div>
+
+        <div class="field" id="f-motivation-editor">
+          <label>Почему хотите к нам? <span class="req">*</span></label>
+          <textarea id="motivationEditor" placeholder="Коротко о мотивации (минимум 20 символов)"></textarea>
+          <div class="error">Напишите хотя бы 20 символов</div>
+        </div>
+      </div>
+
+      <div class="section-title">Согласие</div>
+      <div class="checkbox-group" id="f-agree">
+        <input type="checkbox" id="agree">
+        <label for="agree">Я подтверждаю, что информация достоверна, и согласен(-на) на обработку персональных данных. Для участников младше 18 лет требуется согласие родителей.</label>
+      </div>
+      <div class="error" id="err-agree" style="display:none">Необходимо согласие</div>
+
+      <button type="submit" id="submitBtn">Отправить заявку</button>
+    </form>
+  </div>
+
+  <!-- УСПЕХ -->
+  <div class="success" id="successBlock">
+    <div class="icon">✓</div>
+    <h2>Заявка получена</h2>
+    <p id="successText">Ваша заявка отправлена в StarGate. Если всё подходит — свяжемся по email в течение 14 дней.</p>
+    <button onclick="resetForm()">Отправить ещё одну заявку</button>
+  </div>
+</div>
+
+<footer>© 2026 StarGate · Все права защищены</footer>
+
+<script>
+const form = document.getElementById('jypForm');
+const submitBtn = document.getElementById('submitBtn');
+const formBlock = document.getElementById('formBlock');
+const successBlock = document.getElementById('successBlock');
+const chooseBlock = document.getElementById('chooseBlock');
+
+/* Замените на ваш Cloudflare Worker, когда будет готов */
+const API_URL = 'https://jyp-form.ВАШ_ЛОГИН.workers.dev';
+
+const params = new URLSearchParams(location.search);
+let TYPE = params.get('type') || 'artist';
+
+const TITLES = {
+  artist:  { h: 'Заявка артиста',   s: 'StarGate · Набор талантов 8–20 лет' },
+  manager: { h: 'Заявка менеджера', s: 'StarGate · Набор в команду' },
+  editor:  { h: 'Заявка монтажёра', s: 'StarGate · Набор в команду' },
+};
+const NOTICES = {
+  artist:  '<strong>Перед подачей:</strong> выберите <strong>ОДНУ</strong> категорию. Возраст — <strong>от 8 до 20 лет</strong>. Без фильтров и автотюна.',
+  manager: '<strong>Перед подачей:</strong> возраст <strong>от 16 лет</strong>. Расскажите об опыте и мотивации.',
+  editor:  '<strong>Перед подачей:</strong> возраст <strong>от 16 лет</strong>. Обязательно портфолио.',
+};
+
+function applyType() {
+  if (TYPE === 'team') {
+    chooseBlock.style.display = 'block';
+    formBlock.style.display = 'none';
+    document.title = 'В команду | StarGate';
+    return;
+  }
+  if (!TITLES[TYPE]) TYPE = 'artist';
+  document.getElementById('formTitle').textContent = TITLES[TYPE].h;
+  document.getElementById('formSub').textContent = TITLES[TYPE].s;
+  document.getElementById('formNotice').innerHTML = NOTICES[TYPE];
+  document.title = TITLES[TYPE].h + ' | StarGate';
+
+  document.getElementById('artistFields').style.display  = TYPE === 'artist'  ? 'block' : 'none';
+  document.getElementById('managerFields').style.display = TYPE === 'manager' ? 'block' : 'none';
+  document.getElementById('editorFields').style.display  = TYPE === 'editor'  ? 'block' : 'none';
+
+  const dob = document.getElementById('dob');
+  const today = new Date();
+  const fmt = d => d.toISOString().split('T')[0];
+  if (TYPE === 'artist') {
+    dob.min = fmt(new Date(today.getFullYear() - 20, today.getMonth(), today.getDate()));
+    dob.max = fmt(new Date(today.getFullYear() - 8,  today.getMonth(), today.getDate()));
+  } else {
+    dob.min = fmt(new Date(today.getFullYear() - 80, today.getMonth(), today.getDate()));
+    dob.max = fmt(new Date(today.getFullYear() - 16, today.getMonth(), today.getDate()));
+  }
+}
+applyType();
+
+function val(id) { return document.getElementById(id).value.trim(); }
+function setInvalid(fieldId, invalid) {
+  const el = document.getElementById(fieldId);
+  if (el) el.classList.toggle('invalid', invalid);
+  return !invalid;
+}
+function showError(id, show) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = show ? 'block' : 'none';
+}
+function getAge(dobValue) {
+  const birth = new Date(dobValue), today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
+
+function validate() {
+  let ok = true;
+  ok &= setInvalid('f-fullname', val('fullname').length < 2);
+  ok &= setInvalid('f-gender', !val('gender'));
+  ok &= setInvalid('f-city', val('city').length < 2);
+  ok &= setInvalid('f-country', val('country').length < 2);
+  ok &= setInvalid('f-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val('email')));
+  ok &= setInvalid('f-phone', val('phone').replace(/\D/g,'').length < 10);
+
+  const dobValue = val('dob');
+  const dobField = document.getElementById('f-dob');
+  const dobErr = document.getElementById('dobError');
+  if (!dobValue) {
+    dobField.classList.add('invalid');
+    dobErr.textContent = 'Укажите дату рождения';
+    ok = false;
+  } else {
+    const age = getAge(dobValue);
+    let ageOk, msg;
+    if (TYPE === 'artist') { ageOk = age >= 8 && age <= 20; msg = 'Для артистов возраст от 8 до 20 лет'; }
+    else { ageOk = age >= 16 && age <= 80; msg = 'Для команды возраст от 16 лет'; }
+    dobField.classList.toggle('invalid', !ageOk);
+    dobErr.textContent = msg;
+    ok = ok && ageOk;
+  }
+
+  if (TYPE === 'artist') {
+    ok &= setInvalid('f-height', !val('height') || Number(val('height')) < 50);
+    ok &= setInvalid('f-weight', !val('weight') || Number(val('weight')) < 20);
+    ok &= setInvalid('f-nationality', val('nationality').length < 2);
+    ok &= setInvalid('f-category', !val('category'));
+    const p1 = document.getElementById('photo1').files.length;
+    const p2 = document.getElementById('photo2').files.length;
+    const v  = document.getElementById('video').files.length;
+    showError('err-photo1', !p1); ok = ok && !!p1;
+    showError('err-photo2', !p2); ok = ok && !!p2;
+    showError('err-video',  !v);  ok = ok && !!v;
+  }
+  if (TYPE === 'manager') {
+    ok &= setInvalid('f-exp', !val('experience'));
+    ok &= setInvalid('f-sphere', val('sphere').length < 2);
+    ok &= setInvalid('f-motivation', val('motivation').length < 20);
+  }
+  if (TYPE === 'editor') {
+    ok &= setInvalid('f-tools', val('tools').length < 2);
+    ok &= setInvalid('f-portfolio', !/^https?:\/\/.+/.test(val('portfolio')));
+    ok &= setInvalid('f-exp-editor', !val('editorExp'));
+    ok &= setInvalid('f-motivation-editor', val('motivationEditor').length < 20);
+  }
+
+  const agree = document.getElementById('agree').checked;
+  showError('err-agree', !agree);
+  document.getElementById('f-agree').classList.toggle('invalid', !agree);
+  ok = ok && agree;
+  return !!ok;
+}
+
+function collectData() {
+  const base = {
+    type: TYPE,
+    fullname: val('fullname'), dob: val('dob'), gender: val('gender'),
+    city: val('city'), country: val('country'),
+    email: val('email'), phone: val('phone'), social: val('social'),
+  };
+  if (TYPE === 'artist') Object.assign(base, {
+    height: val('height'), weight: val('weight'), nationality: val('nationality'),
+    category: val('category'),
+    photo1: document.getElementById('photo1').files.length > 0,
+    photo2: document.getElementById('photo2').files.length > 0,
+    video:  document.getElementById('video').files.length > 0,
+  });
+  if (TYPE === 'manager') Object.assign(base, {
+    experience: val('experience'), sphere: val('sphere'),
+    resume: val('resume'), motivation: val('motivation'),
+  });
+  if (TYPE === 'editor') Object.assign(base, {
+    tools: val('tools'), portfolio: val('portfolio'),
+    experience: val('editorExp'), showreel: val('showreel'),
+    motivation: val('motivationEditor'),
+  });
+  return base;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!validate()) return;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Отправка...';
+  try {
+    const resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(collectData()),
+    });
+    const result = await resp.json();
+    if (!result.ok) throw new Error(result.error || 'Server error');
+  } catch (err) {
+    alert('Не удалось отправить заявку: ' + err.message);
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Отправить заявку';
+    return;
+  }
+  formBlock.style.display = 'none';
+  successBlock.style.display = 'block';
+  document.getElementById('successText').textContent =
+    TYPE === 'artist'
+      ? 'Ваша заявка артиста отправлена. Если всё подходит — свяжемся по email в течение 14 дней.'
+      : 'Ваша заявка в команду отправлена. Если всё подходит — свяжемся по email в течение 14 дней.';
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'Отправить заявку';
+});
+
+function resetForm() {
+  form.reset();
+  document.querySelectorAll('.field').forEach(f => f.classList.remove('invalid'));
+  document.querySelectorAll('.error').forEach(e => e.style.display = 'none');
+  document.getElementById('f-agree').classList.remove('invalid');
+  successBlock.style.display = 'none';
+  formBlock.style.display = 'block';
+}
+
+document.getElementById('phone').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g, '').slice(0, 15);
+  if (d.length > 0) {
+    let out = '+' + d[0];
+    if (d.length > 1) out += ' ' + d.slice(1, 4);
+    if (d.length > 4) out += ' ' + d.slice(4, 7);
+    if (d.length > 7) out += ' ' + d.slice(7, 9);
+    if (d.length > 9) out += ' ' + d.slice(9, 11);
+    e.target.value = out;
+  } else e.target.value = '';
+});
+</script>
+</body>
+</html>

@@ -322,8 +322,8 @@ const formBlock = document.getElementById('formBlock');
 const successBlock = document.getElementById('successBlock');
 const chooseBlock = document.getElementById('chooseBlock');
 
-/* Замените на ваш Cloudflare Worker, когда будет готов */
-const API_URL = 'https://jyp-form.ВАШ_ЛОГИН.workers.dev';
+/* === ВАША ССЫЛКА FORMSPREE === */
+const API_URL = 'https://formspree.io/f/mjywgalz';
 
 const params = new URLSearchParams(location.search);
 let TYPE = params.get('type') || 'artist';
@@ -478,11 +478,16 @@ form.addEventListener('submit', async (e) => {
   try {
     const resp = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
       body: JSON.stringify(collectData()),
     });
-    const result = await resp.json();
-    if (!result.ok) throw new Error(result.error || 'Server error');
+    if (!resp.ok) {
+      const errText = await resp.text();
+      throw new Error(errText || 'Ошибка сервера');
+    }
   } catch (err) {
     alert('Не удалось отправить заявку: ' + err.message);
     submitBtn.disabled = false;
